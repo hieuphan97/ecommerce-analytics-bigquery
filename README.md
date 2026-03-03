@@ -1,119 +1,329 @@
-📊 Your Project Name [ Business question + Domain + Tools ]
-Example: Analyze Customer segmentation of Sprocket Central - a medium size bikes accessories organization | Python
+# 📊 E-commerce Performance Analysis – Google Analytics 2017 | BigQuery SQL
 
-+ Business question: The core problem that this project solves -> Customer segmentation
+*Analyze website traffic, revenue performance & user behavior using GA Sessions 2017 dataset on BigQuery*
 
-+ Domain: Domain/ Industry that this projects focus on --> a medium size bikes accessories organization tức công ty sản xuất và thương mại
+---
 
-📌You need to show that your projects are applicable to real business use cases, for a particular industry, not just "learning projects"
+**+ Business question:**
+How is website traffic converting into revenue, and which traffic sources & user behaviors drive business performance?
 
-Author: [Your Name]
-Date: YYYY-MM-DD
-Tools Used: SQL/ Python
+**+ Domain:**
+E-commerce / Digital Marketing Analytics
 
-📑 Table of Contents
-📌 Background & Overview
-📂 Dataset Description & Data Structure
-🔎 Final Conclusion & Recommendations
-📌 Background & Overview
-Objective:
-📖 What is this project about? What Business Question will it solve?
-Clearly outline what this project does, what business questions the project will solve.
+---
 
-Provide a brief introduction - Write in bullet point format
-Point out the main business question
-Example: This project uses Python to analyze transaction data from KPMG to:
+**Author:** [Phan Trung Hiếu]
+**Date:** 12/09/2025
+**Tools Used:** Google BigQuery (Standard SQL)
 
-✔️ Identify the behavior in customer's first transaction.
-✔️ Provide actionable insights to increase retention rate
+---
 
-👤 Who is this project for?
-Mention who might benefit from this project
+## 📑 Table of Contents
 
-Example:
+1. [📌 Background & Overview](#-background--overview)
+2. [📂 Dataset Description & Data Structure](#-dataset-description--data-structure)
+3. [⚒️ Main Process](#-main-process)
+4. [🔎 Final Conclusion & Recommendations](#-final-conclusion--recommendations)
 
-✔️ Data analysts & business analysts
-✔️ Decision-makers & stakeholders
+---
 
-📂 Dataset Description & Data Structure
-📌 Data Source
-Source: (Mention where the dataset is obtained from—Kaggle, company database, government sources, etc.)
-Size: (Mention the number of rows & columns)
-Format: (.csv, .sql, .xlsx, etc.)
-📊 Data Structure & Relationships
-1️⃣ Tables Used:
-Mention how many tables are in the dataset. Only mention tables that you actually used from the entire dataset.
+# 📌 Background & Overview
 
-2️⃣ Table Schema & Data Snapshot
-Table 1: Products Table
+## 🎯 Objective
 
-👉🏻 Insert a screenshot of table schema
+This project analyzes the public dataset `ga_sessions_2017` from BigQuery to:
 
-📌If the table is too big, only capture a part of it that contains key metrics you used in the projects or put the table in toggle
+* Evaluate website traffic performance (visits, pageviews, transactions)
+* Measure marketing channel effectiveness (bounce rate, revenue by source)
+* Analyze purchasing behavior differences (purchasers vs non-purchasers)
+* Understand conversion funnel performance (view → add to cart → purchase)
+* Identify cross-selling opportunities
 
-Example:
+---
 
-Column Name	Data Type	Description
-Product_ID	INT	Unique identifier for each product
-Name	TEXT	Product name
-Category	TEXT	Product category
-Price	FLOAT	Price per unit
-Table 2: Sales Transactions
+## 📖 Business Questions
 
-👉🏻 Insert a screenshot of table schema.
+1. How did traffic and transactions perform in Q1 2017?
+2. Which traffic sources had the highest bounce rate?
+3. How much revenue did each traffic source generate (weekly & monthly)?
+4. Do purchasers behave differently from non-purchasers?
+5. What is the average transaction frequency per user?
+6. What is the average revenue per session?
+7. What products are frequently co-purchased?
+8. What is the conversion rate from product view → add to cart → purchase?
 
-⚒️ Main Process
-1️⃣ Data Cleaning & Preprocessing
-2️⃣ Exploratory Data Analysis (EDA)
-3️⃣ SQL/ Python Analysis
+---
 
-👉🏻 First, explain codes' purpose - what they do in 1, 2 short sentences.
+## 👤 Who is this project for?
 
-Example
+✔️ Digital Marketing Analysts
+✔️ E-commerce Managers
+✔️ Growth & Performance Teams
+✔️ BI & Data Analysts
 
-Task 1: Analyze bounce rate...
-Bounce rate represents the percentage of website sessions where users visit only one page and leave without interacting further with the site. A high bounce rate can indicate that visitors are not [....]
+---
 
-📌You need to show your understanding/ thinking process when you do this analysis. In the above exp, I explain the meaning of Bounce Rate in Marketing performance analysis - which demonstrates my understanding about the metric & its role in my projects/ flow of analysis" 📌If the task is just simple as "Remove duplication, Replace null value.."--> Summarize all steps related to Transforming & Cleaning data steps in a group & explain shortly at once the reason why you need that transformation
+# 📂 Dataset Description & Data Structure
 
-👉🏻 Then how your query/ code & Insert screenshots of your result
+## 📌 Data Source
 
-If your result is a very long table with many records, only show top 5/10 and bottom 5/10 rows, or records that relevant to the insights/ observation below
+* **Source:** Public dataset on Google BigQuery
+* **Dataset:** `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+* **Type:** Partitioned tables (daily session-level data)
+* **Format:** Nested & Repeated fields (STRUCT + ARRAY)
 
-Example
+---
 
-Project Results:
-Period	Name	Count Items	Count Orders	Sales
-Apr 2014	Bib-Shorts	4	1	233.97
-Feb 2014	Bib-Shorts	4	2	233.97
-Jul 2013	Bib-Shorts	2	1	116.99
-Jun 2013	Bib-Shorts	2	1	116.99
-Apr 2014	Bike Racks	45	45	5,400.00
-Aug 2013	Bike Racks	222	63	17,387.18
-Dec 2013	Bike Racks	162	48	12,582.29
-Feb 2014	Bike Racks	27	27	3,240.00
-Jan 2014	Bike Racks	161	53	12,840.00
-Jul 2013	Bike Racks	422	75	29,802.30
-...	...	...	...	...
-May 2014	Vests	610	103	23,640.71
-Nov 2013	Vests	315	75	12,937.24
-Oct 2013	Vests	611	93	23,255.74
-Sep 2013	Vests	623	102	24,100.47
-Jul 2013	Wheels	4	1	698.63
-Jun 2013	Wheels	3	1	450.91
-Sep 2013	Wheels	1	1	83.30
-A summary of the full results. The complete dataset is available in the repository.
+## 📊 Data Structure & Relationships
 
-👉🏻 Finally, explain your observations/ findings from the results
+### 1️⃣ Tables Used
 
-Describe trends, key metrics, and patterns.
+Only 1 main logical dataset:
 
-🔎 Final Conclusion & Recommendations
-👉🏻 Based on the insights and findings above, we would recommend the [stakeholder team] to consider the following:
+* `ga_sessions_2017*` (daily sharded tables)
 
-📍 Key Takeaways:
-✔️ Recommendation 1
-✔️ Recommendation 2
-✔️ Recommendation 3
+However, it contains nested structures:
 
-📌Remember to summarize the most core insights/ observations you extract from the entire projects. Recap ONLY key actions/ recommendations. DO NOT copy paste everything above
+* `totals`
+* `trafficSource`
+* `hits`
+* `hits.product`
+* `eCommerceAction`
+
+This requires `UNNEST()` to flatten product-level data.
+
+---
+
+### 2️⃣ Key Fields Used
+
+| Column                      | Description                 |
+| --------------------------- | --------------------------- |
+| date                        | Session date                |
+| fullVisitorId               | Unique user identifier      |
+| totals.visits               | Number of visits            |
+| totals.pageviews            | Number of pageviews         |
+| totals.transactions         | Number of transactions      |
+| productRevenue              | Revenue (micro-units)       |
+| trafficSource.source        | Traffic acquisition channel |
+| eCommerceAction.action_type | Funnel stage indicator      |
+
+---
+
+# ⚒️ Main Process
+
+---
+
+## 1️⃣ Traffic Overview (Q1 2017)
+
+### Purpose
+
+Evaluate traffic trend and transaction volume in Jan–Mar 2017.
+
+### What was done
+
+* Aggregated visits, pageviews, transactions
+* Grouped by month
+* Ordered chronologically
+
+### Insight Direction
+
+* Identify growth/decline trend
+* Compare traffic vs transaction alignment
+
+---
+
+## 2️⃣ Bounce Rate by Traffic Source (July 2017)
+
+### Definition
+
+Bounce Rate =
+(Number of Bounces / Total Visits) × 100
+
+A high bounce rate indicates poor landing page engagement or low traffic quality.
+
+### What was done
+
+* Aggregated visits per source
+* Counted bounces
+* Calculated bounce rate
+* Ranked by total visits
+
+### Insight Direction
+
+* Identify high-volume but low-quality traffic
+* Evaluate marketing channel effectiveness
+
+---
+
+## 3️⃣ Revenue by Source (Week & Month – June 2017)
+
+### What was done
+
+* Used `UNNEST(hits)` and `UNNEST(hits.product)`
+* Aggregated productRevenue
+* Calculated revenue per:
+
+  * Month
+  * ISO Week
+
+### Insight Direction
+
+* Detect revenue concentration by channel
+* Identify short-term revenue spikes
+
+---
+
+## 4️⃣ Purchasers vs Non-Purchasers Behavior
+
+### Metric
+
+Average Pageviews per User
+
+### Logic
+
+* Purchasers: `transactions >= 1`
+* Non-purchasers: `transactions IS NULL`
+* Calculated:
+
+  * Total pageviews
+  * Unique users
+  * Average per user
+
+### Insight Direction
+
+* Measure engagement gap
+* Validate hypothesis:
+
+  > Purchasers view more pages before converting
+
+---
+
+## 5️⃣ Avg Transactions per Purchasing User (July 2017)
+
+### Purpose
+
+Measure purchase frequency per buyer.
+
+### Metric
+
+Avg Transactions =
+Total Transactions / Distinct Purchasing Users
+
+### Insight Direction
+
+* Understand repeat purchase intensity
+* Evaluate customer value concentration
+
+---
+
+## 6️⃣ Average Revenue per Session (Purchasers Only)
+
+### Purpose
+
+Measure monetization efficiency per visit.
+
+### Metric
+
+Avg Revenue per Visit =
+Total Revenue / Total Visits
+
+### Insight Direction
+
+* Evaluate traffic monetization quality
+* Compare with industry benchmarks
+
+---
+
+## 7️⃣ Cross-Selling Analysis
+
+### Business Question
+
+Customers who purchased:
+**"YouTube Men's Vintage Henley"**
+
+→ What other products did they buy?
+
+### Approach
+
+* Identify users who bought the target product
+* Join back to purchase table
+* Aggregate other products by quantity
+
+### Insight Direction
+
+* Identify bundling opportunities
+* Support recommendation system logic
+
+---
+
+## 8️⃣ Conversion Funnel Analysis (Q1 2017)
+
+### Funnel Stages
+
+| Action Type | Meaning      |
+| ----------- | ------------ |
+| 2           | Product View |
+| 3           | Add to Cart  |
+| 6           | Purchase     |
+
+### Metrics
+
+* Add to Cart Rate = AddToCart / Product View
+* Purchase Rate = Purchase / Product View
+
+### Insight Direction
+
+* Detect drop-off points
+* Identify UX / pricing / trust friction
+
+---
+
+# 🔎 Final Conclusion & Recommendations
+
+## 🔍 Key Observations
+
+1. Traffic volume does not always correlate with transaction volume.
+2. Certain traffic sources generate high visits but high bounce rates.
+3. Purchasers show significantly higher engagement (pageviews).
+4. Conversion funnel shows major drop-off at Add-to-Cart stage.
+5. Cross-selling opportunity exists around hero products.
+
+---
+
+## 📈 Business Recommendations
+
+### 🎯 For Marketing Team
+
+* Reduce budget allocation for high-bounce sources
+* Scale high-revenue traffic channels
+
+### 🛒 For E-commerce Team
+
+* Optimize product detail pages (reduce drop-off)
+* Improve Add-to-Cart UX
+* Test checkout flow (A/B testing)
+
+### 📦 For Growth Team
+
+* Implement product bundling strategy
+* Deploy recommendation engine logic
+* Target high-engagement non-purchasers via remarketing
+
+---
+
+# 📌 Project Value
+
+This project demonstrates:
+
+* Advanced SQL (CTE, UNNEST, SAFE_DIVIDE, Window functions)
+* Funnel analysis
+* Behavioral segmentation
+* Marketing performance analytics
+* Business-driven analytical thinking
+
+---
+
+Nếu bạn muốn, tôi có thể:
+
+* Viết thêm **phần Technical Architecture (BigQuery cost optimization, partition strategy, query performance)**
+* Hoặc giúp bạn nâng cấp README lên level “Senior-ready portfolio” với ERD diagram + KPI framework 🚀
