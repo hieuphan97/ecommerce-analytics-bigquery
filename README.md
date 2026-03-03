@@ -245,7 +245,8 @@ ORDER BY month;
 ## Outcome
 <img width="745" height="128" alt="image" src="https://github.com/user-attachments/assets/ca2506d9-12c9-454c-8c49-577b281d5da6" />
 
- => urchasers viewed approximately 210–223 fewer pages on average than non-purchasers during these months.
+ => Purchasers viewed approximately 210–223 fewer pages on average than non-purchasers during these months.
+ 
 ---
 
 #### 🔍 Query 05: Average Transactions per Purchasing User (July 2017)
@@ -333,6 +334,7 @@ ORDER BY quantity DESC;
 <img width="527" height="287" alt="image" src="https://github.com/user-attachments/assets/2b20cb8a-1a30-4e10-bc8b-626dae389ac5" />
 
 => The top co-purchased products were Google Sunglasses, Google Women’s Vintage Hero Tee Black, and SPF-15 Slim & Slender Lip Balm, suggesting strong cross-sell potential — particularly around branded apparel and accessories.
+
 ---
 
 #### 🔍 Query 08: Product Conversion Funnel — View → Add to Cart → Purchase (Jan–Mar 2017)
