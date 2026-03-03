@@ -8,7 +8,7 @@
 
 > 📌 This project applies real-world web analytics queries to the **Google Analytics Sample Dataset** — a publicly available BigQuery dataset (`bigquery-public-data.google_analytics_sample.ga_sessions_2017`) — to extract actionable insights about user behavior, traffic sources, and purchase funnel performance for the Google Merchandise Store.
 
-**Author:** [Your Name]
+**Author:** [Phan Trung Hiếu]
 
 **Date:** 2025
 
