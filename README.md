@@ -79,7 +79,7 @@ This project uses the **`ga_sessions_2017*`** wildcard table, which is a single 
 
 **Main Table: `ga_sessions`**
 
-👉🏻 *Insert a screenshot of the BigQuery table schema here*
+<img width="1461" height="684" alt="image" src="https://github.com/user-attachments/assets/79296690-07ac-4734-8e07-5cbb3c80794d" />
 
 | Column Name | Data Type | Description |
 |---|---|---|
