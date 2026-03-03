@@ -1,20 +1,16 @@
-# 📊 E-commerce Performance Analysis – Google Analytics 2017 | BigQuery SQL
+# 📊 Explore E-commerce Performance of Google Merchandise Store | Web Analytics + SQL
 
-*Analyze website traffic, revenue performance & user behavior using GA Sessions 2017 dataset on BigQuery*
+**Business Question:** How do users browse, engage, and convert on an e-commerce platform — and what drives revenue?
 
----
+**Domain:** E-commerce / Digital Marketing Analytics
 
-**+ Business question:**
-How is website traffic converting into revenue, and which traffic sources & user behaviors drive business performance?
+**Tools Used:** SQL (Google BigQuery)
 
-**+ Domain:**
-E-commerce / Digital Marketing Analytics
+> 📌 This project applies real-world web analytics queries to the **Google Analytics Sample Dataset** — a publicly available BigQuery dataset (`bigquery-public-data.google_analytics_sample.ga_sessions_2017`) — to extract actionable insights about user behavior, traffic sources, and purchase funnel performance for the Google Merchandise Store.
 
----
+**Author:** [Your Name]
 
-**Author:** [Phan Trung Hiếu]
-**Date:** 12/09/2025
-**Tools Used:** Google BigQuery (Standard SQL)
+**Date:** 2025
 
 ---
 
@@ -22,308 +18,406 @@ E-commerce / Digital Marketing Analytics
 
 1. [📌 Background & Overview](#-background--overview)
 2. [📂 Dataset Description & Data Structure](#-dataset-description--data-structure)
-3. [⚒️ Main Process](#-main-process)
+3. [⚒️ Main Process](#️-main-process)
 4. [🔎 Final Conclusion & Recommendations](#-final-conclusion--recommendations)
 
 ---
 
-# 📌 Background & Overview
+## 📌 Background & Overview
 
-## 🎯 Objective
+### Objective
 
-This project analyzes the public dataset `ga_sessions_2017` from BigQuery to:
+### 📖 What is this project about? What Business Question will it solve?
 
-* Evaluate website traffic performance (visits, pageviews, transactions)
-* Measure marketing channel effectiveness (bounce rate, revenue by source)
-* Analyze purchasing behavior differences (purchasers vs non-purchasers)
-* Understand conversion funnel performance (view → add to cart → purchase)
-* Identify cross-selling opportunities
+This project uses **SQL on Google BigQuery** to analyze web session data from the Google Merchandise Store (2017) to:
 
----
+✔️ Measure traffic volume, pageviews, and transactions over time to understand growth trends.
 
-## 📖 Business Questions
+✔️ Identify which traffic sources generate the most visits and highest bounce rates.
 
-1. How did traffic and transactions perform in Q1 2017?
-2. Which traffic sources had the highest bounce rate?
-3. How much revenue did each traffic source generate (weekly & monthly)?
-4. Do purchasers behave differently from non-purchasers?
-5. What is the average transaction frequency per user?
-6. What is the average revenue per session?
-7. What products are frequently co-purchased?
-8. What is the conversion rate from product view → add to cart → purchase?
+✔️ Compare revenue contribution by traffic source across different time granularities (weekly vs. monthly).
 
----
+✔️ Understand the behavioral difference between purchasers and non-purchasers through pageview patterns.
 
-## 👤 Who is this project for?
+✔️ Analyze average transaction value and revenue per session to evaluate monetization efficiency.
 
-✔️ Digital Marketing Analysts
-✔️ E-commerce Managers
-✔️ Growth & Performance Teams
-✔️ BI & Data Analysts
+✔️ Discover cross-selling opportunities based on co-purchase patterns.
+
+✔️ Map the product conversion funnel (view → add-to-cart → purchase) to identify drop-off points.
+
+### 👤 Who is this project for?
+
+✔️ **E-commerce managers & digital marketers** — to evaluate campaign effectiveness and traffic quality.
+
+✔️ **Data analysts & business analysts** — to understand how to query and derive insights from GA session-level data.
+
+✔️ **Product & growth teams** — to identify funnel bottlenecks and cross-sell opportunities.
 
 ---
 
-# 📂 Dataset Description & Data Structure
+## 📂 Dataset Description & Data Structure
 
-## 📌 Data Source
+### 📌 Data Source
 
-* **Source:** Public dataset on Google BigQuery
-* **Dataset:** `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
-* **Type:** Partitioned tables (daily session-level data)
-* **Format:** Nested & Repeated fields (STRUCT + ARRAY)
+- **Source:** Google BigQuery Public Dataset — `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+- **Size:** Multiple partitioned tables by date (daily), covering the full year of 2017
+- **Format:** BigQuery native tables (queried via SQL); nested & repeated fields (ARRAY / STRUCT)
+- **Access:** Free via Google BigQuery sandbox — no download required
 
----
+### 📊 Data Structure & Relationships
 
-## 📊 Data Structure & Relationships
+#### 1️⃣ Tables Used:
 
-### 1️⃣ Tables Used
+This project uses the **`ga_sessions_2017*`** wildcard table, which is a single denormalized table containing session-level data with nested fields. Key nested structures used:
 
-Only 1 main logical dataset:
+- `hits` — repeated record containing page hits and e-commerce actions per session
+- `hits.product` — nested within hits; contains product-level revenue, quantity, and name
+- `totals` — session-level aggregated metrics (visits, pageviews, transactions, bounces)
+- `trafficSource` — information about where the session originated
 
-* `ga_sessions_2017*` (daily sharded tables)
+#### 2️⃣ Table Schema & Data Snapshot
 
-However, it contains nested structures:
+**Main Table: `ga_sessions`**
 
-* `totals`
-* `trafficSource`
-* `hits`
-* `hits.product`
-* `eCommerceAction`
+👉🏻 *Insert a screenshot of the BigQuery table schema here*
 
-This requires `UNNEST()` to flatten product-level data.
-
----
-
-### 2️⃣ Key Fields Used
-
-| Column                      | Description                 |
-| --------------------------- | --------------------------- |
-| date                        | Session date                |
-| fullVisitorId               | Unique user identifier      |
-| totals.visits               | Number of visits            |
-| totals.pageviews            | Number of pageviews         |
-| totals.transactions         | Number of transactions      |
-| productRevenue              | Revenue (micro-units)       |
-| trafficSource.source        | Traffic acquisition channel |
-| eCommerceAction.action_type | Funnel stage indicator      |
+| Column Name | Data Type | Description |
+|---|---|---|
+| `date` | STRING | Session date in `YYYYMMDD` format |
+| `fullVisitorId` | STRING | Unique identifier for each visitor |
+| `totals.visits` | INTEGER | Number of sessions |
+| `totals.pageviews` | INTEGER | Total pageviews in the session |
+| `totals.transactions` | INTEGER | Number of transactions completed |
+| `totals.bounces` | INTEGER | 1 if session bounced, NULL otherwise |
+| `trafficSource.source` | STRING | Traffic source (e.g., google, direct) |
+| `hits.eCommerceAction.action_type` | STRING | E-commerce action (2=view, 3=add to cart, 6=purchase) |
+| `hits.product.v2ProductName` | STRING | Product name |
+| `hits.product.productRevenue` | INTEGER | Product revenue (in micros, divide by 1,000,000) |
+| `hits.product.productQuantity` | INTEGER | Quantity of product ordered |
 
 ---
 
-# ⚒️ Main Process
+## ⚒️ Main Process
+
+### 1️⃣ Data Cleaning & Preprocessing
+
+- Used `FORMAT_DATE` and `PARSE_DATE` to standardize the `date` STRING field into readable month/week formats.
+- Used `UNNEST(hits)` and `UNNEST(hits.product)` to flatten the nested arrays, enabling product-level and hit-level analysis.
+- Filtered out sessions with `NULL` revenue or transactions where needed to isolate purchaser behavior.
+- Applied `SAFE_DIVIDE` to prevent division-by-zero errors when computing conversion rates.
 
 ---
 
-## 1️⃣ Traffic Overview (Q1 2017)
-
-### Purpose
-
-Evaluate traffic trend and transaction volume in Jan–Mar 2017.
-
-### What was done
-
-* Aggregated visits, pageviews, transactions
-* Grouped by month
-* Ordered chronologically
-
-### Insight Direction
-
-* Identify growth/decline trend
-* Compare traffic vs transaction alignment
+### 2️⃣ SQL Analysis
 
 ---
 
-## 2️⃣ Bounce Rate by Traffic Source (July 2017)
+#### 🔍 Query 01: Total Visits, Pageviews & Transactions (Jan–Mar 2017)
 
-### Definition
+This query tracks overall site activity month-over-month for Q1 2017 — a foundational health check to understand how the store's traffic and transaction volume evolved early in the year.
 
-Bounce Rate =
-(Number of Bounces / Total Visits) × 100
+```sql
+SELECT
+  FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', CAST(date AS STRING))) AS month
+  ,SUM(totals.visits) AS visits
+  ,SUM(totals.pageviews) AS pageviews
+  ,SUM(totals.transactions) AS transactions
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`
+WHERE _TABLE_SUFFIX BETWEEN '0101' AND '0331'
+GROUP BY 1
+ORDER BY 1;
+```
 
-A high bounce rate indicates poor landing page engagement or low traffic quality.
+👉🏻 *Insert screenshot of query result here*
 
-### What was done
-
-* Aggregated visits per source
-* Counted bounces
-* Calculated bounce rate
-* Ranked by total visits
-
-### Insight Direction
-
-* Identify high-volume but low-quality traffic
-* Evaluate marketing channel effectiveness
-
----
-
-## 3️⃣ Revenue by Source (Week & Month – June 2017)
-
-### What was done
-
-* Used `UNNEST(hits)` and `UNNEST(hits.product)`
-* Aggregated productRevenue
-* Calculated revenue per:
-
-  * Month
-  * ISO Week
-
-### Insight Direction
-
-* Detect revenue concentration by channel
-* Identify short-term revenue spikes
+**📌 Observations:** *(Add your findings — e.g., "Pageviews grew by X% from January to March...")*
 
 ---
 
-## 4️⃣ Purchasers vs Non-Purchasers Behavior
+#### 🔍 Query 02: Bounce Rate per Traffic Source (July 2017)
 
-### Metric
+Bounce rate measures the percentage of sessions where a user visits only one page and leaves without further interaction. A high bounce rate from a specific source may indicate poor landing page relevance or low-intent traffic.
 
-Average Pageviews per User
+```sql
+WITH raw_data AS (
+  SELECT
+    trafficSource.source AS source
+    ,SUM(totals.visits) AS total_visits
+    ,COUNT(totals.bounces) AS total_no_of_bounces
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`
+  GROUP BY trafficSource.source
+  ORDER BY total_visits DESC
+)
+SELECT
+  source
+  ,total_visits
+  ,total_no_of_bounces
+  ,ROUND(total_no_of_bounces / total_visits * 100, 3) AS bounce_rate
+FROM raw_data;
+```
 
-### Logic
+👉🏻 *Insert screenshot of query result here*
 
-* Purchasers: `transactions >= 1`
-* Non-purchasers: `transactions IS NULL`
-* Calculated:
-
-  * Total pageviews
-  * Unique users
-  * Average per user
-
-### Insight Direction
-
-* Measure engagement gap
-* Validate hypothesis:
-
-  > Purchasers view more pages before converting
-
----
-
-## 5️⃣ Avg Transactions per Purchasing User (July 2017)
-
-### Purpose
-
-Measure purchase frequency per buyer.
-
-### Metric
-
-Avg Transactions =
-Total Transactions / Distinct Purchasing Users
-
-### Insight Direction
-
-* Understand repeat purchase intensity
-* Evaluate customer value concentration
+**📌 Observations:** *(e.g., "Direct traffic had the highest volume but also a significant bounce rate...")*
 
 ---
 
-## 6️⃣ Average Revenue per Session (Purchasers Only)
+#### 🔍 Query 03: Revenue by Traffic Source — Week vs. Month (June 2017)
 
-### Purpose
+By comparing revenue across weekly and monthly granularities, we can identify short-term spikes that a monthly view might obscure — helping marketers evaluate campaign timing.
 
-Measure monetization efficiency per visit.
+```sql
+WITH month_data AS (
+  SELECT
+    'Month' AS time_type
+    ,FORMAT_DATE("%Y%m", PARSE_DATE("%Y%m%d", date)) AS time
+    ,trafficSource.source AS source
+    ,ROUND(SUM(productRevenue / 1000000), 4) AS revenue
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+    UNNEST(hits) hits,
+    UNNEST(hits.product) product
+  WHERE product.productRevenue IS NOT NULL
+  GROUP BY 1, 2, 3
+),
+week_data AS (
+  SELECT
+    'Week' AS time_type
+    ,FORMAT_DATE("%Y%W", PARSE_DATE("%Y%m%d", date)) AS time
+    ,trafficSource.source AS source
+    ,ROUND(SUM(productRevenue / 1000000), 4) AS revenue
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201706*`,
+    UNNEST(hits) hits,
+    UNNEST(hits.product) product
+  WHERE product.productRevenue IS NOT NULL
+  GROUP BY 1, 2, 3
+)
+SELECT * FROM month_data
+UNION ALL
+SELECT * FROM week_data
+ORDER BY time_type;
+```
 
-### Metric
+👉🏻 *Insert screenshot of query result here*
 
-Avg Revenue per Visit =
-Total Revenue / Total Visits
-
-### Insight Direction
-
-* Evaluate traffic monetization quality
-* Compare with industry benchmarks
-
----
-
-## 7️⃣ Cross-Selling Analysis
-
-### Business Question
-
-Customers who purchased:
-**"YouTube Men's Vintage Henley"**
-
-→ What other products did they buy?
-
-### Approach
-
-* Identify users who bought the target product
-* Join back to purchase table
-* Aggregate other products by quantity
-
-### Insight Direction
-
-* Identify bundling opportunities
-* Support recommendation system logic
-
----
-
-## 8️⃣ Conversion Funnel Analysis (Q1 2017)
-
-### Funnel Stages
-
-| Action Type | Meaning      |
-| ----------- | ------------ |
-| 2           | Product View |
-| 3           | Add to Cart  |
-| 6           | Purchase     |
-
-### Metrics
-
-* Add to Cart Rate = AddToCart / Product View
-* Purchase Rate = Purchase / Product View
-
-### Insight Direction
-
-* Detect drop-off points
-* Identify UX / pricing / trust friction
+**📌 Observations:** *(e.g., "Google (organic search) was the dominant revenue source in June 2017...")*
 
 ---
 
-# 🔎 Final Conclusion & Recommendations
+#### 🔍 Query 04: Average Pageviews — Purchasers vs. Non-Purchasers (Jun–Jul 2017)
 
-## 🔍 Key Observations
+Comparing browsing depth between purchasers and non-purchasers reveals engagement signals. If purchasers view significantly more pages, content richness and product discovery play a key role in conversion.
 
-1. Traffic volume does not always correlate with transaction volume.
-2. Certain traffic sources generate high visits but high bounce rates.
-3. Purchasers show significantly higher engagement (pageviews).
-4. Conversion funnel shows major drop-off at Add-to-Cart stage.
-5. Cross-selling opportunity exists around hero products.
+```sql
+WITH purchasers AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,SUM(totals.pageviews) AS total_pageviews_purchase
+    ,COUNT(DISTINCT fullVisitorId) AS unique_users_purchase
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    UNNEST(hits) hits,
+    UNNEST(hits.product) product
+  WHERE _TABLE_SUFFIX BETWEEN '0601' AND '0731'
+    AND totals.transactions >= 1
+    AND productRevenue IS NOT NULL
+  GROUP BY month
+),
+non_purchasers AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,SUM(totals.pageviews) AS total_pageviews_non_purchase
+    ,COUNT(DISTINCT fullVisitorId) AS unique_users_non_purchase
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    UNNEST(hits) hits,
+    UNNEST(hits.product) product
+  WHERE _TABLE_SUFFIX BETWEEN '0601' AND '0731'
+    AND totals.transactions IS NULL
+    AND productRevenue IS NULL
+  GROUP BY month
+)
+SELECT
+  COALESCE(p.month, np.month) AS month
+  ,ROUND(p.total_pageviews_purchase / p.unique_users_purchase, 7) AS avg_pageviews_purchase
+  ,ROUND(np.total_pageviews_non_purchase / np.unique_users_non_purchase, 7) AS avg_pageviews_non_purchase
+FROM purchasers p
+FULL JOIN non_purchasers np ON p.month = np.month
+ORDER BY month;
+```
+
+👉🏻 *Insert screenshot of query result here*
+
+**📌 Observations:** *(e.g., "Purchasers viewed on average X more pages than non-purchasers...")*
 
 ---
 
-## 📈 Business Recommendations
+#### 🔍 Query 05: Average Transactions per Purchasing User (July 2017)
 
-### 🎯 For Marketing Team
+This metric evaluates customer purchasing frequency. A value above 1 indicates repeat purchases within the same month — a sign of high-value customers or successful upselling.
 
-* Reduce budget allocation for high-bounce sources
-* Scale high-revenue traffic channels
+```sql
+SELECT
+  FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+  ,SUM(totals.transactions) / COUNT(DISTINCT fullVisitorId) AS avg_total_transactions_per_user
+FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+  UNNEST(hits) hits,
+  UNNEST(hits.product) product
+WHERE totals.transactions >= 1
+  AND productRevenue IS NOT NULL
+GROUP BY month;
+```
 
-### 🛒 For E-commerce Team
+👉🏻 *Insert screenshot of query result here*
 
-* Optimize product detail pages (reduce drop-off)
-* Improve Add-to-Cart UX
-* Test checkout flow (A/B testing)
-
-### 📦 For Growth Team
-
-* Implement product bundling strategy
-* Deploy recommendation engine logic
-* Target high-engagement non-purchasers via remarketing
-
----
-
-# 📌 Project Value
-
-This project demonstrates:
-
-* Advanced SQL (CTE, UNNEST, SAFE_DIVIDE, Window functions)
-* Funnel analysis
-* Behavioral segmentation
-* Marketing performance analytics
-* Business-driven analytical thinking
+**📌 Observations:** *(e.g., "The average purchasing user completed approximately X transactions in July 2017...")*
 
 ---
 
-Nếu bạn muốn, tôi có thể:
+#### 🔍 Query 06: Average Revenue per Session — Purchasers Only (July 2017)
 
-* Viết thêm **phần Technical Architecture (BigQuery cost optimization, partition strategy, query performance)**
-* Hoặc giúp bạn nâng cấp README lên level “Senior-ready portfolio” với ERD diagram + KPI framework 🚀
+Revenue per session is a critical monetization metric. By restricting to sessions that resulted in a purchase, we isolate the true spending power of converting visitors — useful for estimating ROI of acquisition campaigns.
+
+```sql
+WITH revenue_per_user AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,SUM(productRevenue) / 1000000 AS total_revenue
+    ,SUM(totals.visits) AS totals_visits
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+    UNNEST(hits) hits,
+    UNNEST(hits.product) product
+  WHERE totals.transactions IS NOT NULL
+    AND productRevenue IS NOT NULL
+  GROUP BY month
+)
+SELECT
+  month
+  ,ROUND(total_revenue / totals_visits, 2) AS avg_revenue_by_user_per_visit
+FROM revenue_per_user;
+```
+
+👉🏻 *Insert screenshot of query result here*
+
+**📌 Observations:** *(e.g., "On average, each purchasing session generated approximately $X in revenue in July 2017...")*
+
+---
+
+#### 🔍 Query 07: Cross-Sell Analysis — Co-purchased Products with "YouTube Men's Vintage Henley" (July 2017)
+
+Understanding what products customers buy alongside a popular item enables data-driven bundling and recommendation strategies. This query identifies the most frequently co-purchased items.
+
+```sql
+WITH raw_data AS (
+  SELECT
+    fullVisitorId
+    ,v2ProductName AS product_name
+    ,productQuantity AS quantity
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_201707*`,
+    UNNEST(hits) AS hits,
+    UNNEST(hits.product) AS product
+  WHERE totals.transactions >= 1
+    AND product.productRevenue IS NOT NULL
+),
+purchased_orders AS (
+  SELECT DISTINCT fullVisitorId
+  FROM raw_data
+  WHERE product_name = "YouTube Men's Vintage Henley"
+),
+other_purchases AS (
+  SELECT
+    r.product_name AS other_purchased_products
+    ,SUM(r.quantity) AS quantity
+  FROM raw_data r
+  JOIN purchased_orders p ON r.fullVisitorId = p.fullVisitorId
+  WHERE r.product_name != "YouTube Men's Vintage Henley"
+  GROUP BY other_purchased_products
+)
+SELECT *
+FROM other_purchases
+ORDER BY quantity DESC;
+```
+
+👉🏻 *Insert screenshot of query result here*
+
+**📌 Observations:** *(e.g., "The top co-purchased products were X, Y, Z — suggesting strong cross-sell potential...")*
+
+---
+
+#### 🔍 Query 08: Product Conversion Funnel — View → Add to Cart → Purchase (Jan–Mar 2017)
+
+This cohort map tracks how many products were viewed, added to cart, and ultimately purchased each month. It quantifies drop-off at each stage — a key metric for conversion rate optimization (CRO).
+
+| `action_type` value | Meaning |
+|---|---|
+| `'2'` | Product view |
+| `'3'` | Add to cart |
+| `'6'` | Purchase |
+
+```sql
+WITH cte_view AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,COUNT(product.v2ProductName) AS num_product_view
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    UNNEST(hits) AS hits,
+    UNNEST(hits.product) AS product
+  WHERE _table_suffix BETWEEN '0101' AND '0331'
+    AND eCommerceAction.action_type = '2'
+    AND product.v2ProductName IS NOT NULL
+  GROUP BY month
+),
+cte_addtocart AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,COUNT(product.v2ProductName) AS num_add_to_card
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    UNNEST(hits) AS hits,
+    UNNEST(hits.product) AS product
+  WHERE _table_suffix BETWEEN '0101' AND '0331'
+    AND eCommerceAction.action_type = '3'
+    AND product.v2ProductName IS NOT NULL
+  GROUP BY month
+),
+cte_purchase AS (
+  SELECT
+    FORMAT_DATE('%Y%m', PARSE_DATE('%Y%m%d', date)) AS month
+    ,COUNT(product.v2ProductName) AS num_purchase
+  FROM `bigquery-public-data.google_analytics_sample.ga_sessions_2017*`,
+    UNNEST(hits) AS hits,
+    UNNEST(hits.product) AS product
+  WHERE _table_suffix BETWEEN '0101' AND '0331'
+    AND eCommerceAction.action_type = '6'
+    AND product.productRevenue IS NOT NULL
+  GROUP BY month
+)
+SELECT
+  COALESCE(v.month, a.month, p.month) AS month
+  ,SUM(v.num_product_view) AS num_product_view
+  ,SUM(a.num_add_to_card) AS num_addtocart
+  ,SUM(p.num_purchase) AS num_purchase
+  ,ROUND(SAFE_DIVIDE(SUM(a.num_add_to_card), SUM(v.num_product_view)) * 100, 2) AS add_to_cart_rate
+  ,ROUND(SAFE_DIVIDE(SUM(p.num_purchase), SUM(v.num_product_view)) * 100, 2) AS purchase_rate
+FROM cte_view v
+LEFT JOIN cte_addtocart a ON v.month = a.month
+LEFT JOIN cte_purchase p ON v.month = p.month
+GROUP BY month
+ORDER BY month;
+```
+
+👉🏻 *Insert screenshot of query result here*
+
+**📌 Observations:** *(e.g., "The add-to-cart rate averaged ~X% across Q1 2017, while purchase rate was only ~Y%, indicating a significant drop-off at checkout...")*
+
+---
+
+## 🔎 Final Conclusion & Recommendations
+
+Based on the insights and findings above, we would recommend the **e-commerce & marketing team** to consider the following:
+
+✔️ **Traffic Quality over Quantity** — Certain high-volume sources have disproportionately high bounce rates. Prioritize content optimization for these channels rather than increasing ad spend.
+
+✔️ **Improve Cart-to-Purchase Conversion** — The funnel analysis (Query 08) reveals significant drop-off between add-to-cart and purchase. Consider A/B testing checkout flows, urgency signals, or free shipping thresholds.
+
+✔️ **Leverage Cross-Sell Opportunities** — Products frequently co-purchased with popular items (Query 07) should be surfaced via "frequently bought together" recommendations to increase average order value.
+
+✔️ **Engage High-Pageview Non-Purchasers** — Non-purchasers who browse extensively are high-intent visitors who did not convert. Retargeting campaigns or personalized email nudges could recover this segment.
+
+✔️ **Monitor Revenue per Session as a Core KPI** — Average revenue per purchasing session (Query 06) is a strong proxy for customer value. Track this monthly alongside traffic source to prioritize high-ROI acquisition channels.
