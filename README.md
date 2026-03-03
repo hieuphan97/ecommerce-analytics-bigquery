@@ -130,7 +130,6 @@ ORDER BY 1;
 ## Outcome
 <img width="641" height="204" alt="image" src="https://github.com/user-attachments/assets/9dae01b8-2eae-4640-b381-28d053b5a6e5" />
 
-
  => Pageviews grew by 0.7% from January to March.
 
 ---
@@ -156,10 +155,10 @@ SELECT
   ,ROUND(total_no_of_bounces / total_visits * 100, 3) AS bounce_rate
 FROM raw_data;
 ```
+## Outcome
+<img width="629" height="366" alt="image" src="https://github.com/user-attachments/assets/bde7fab9-2936-47cf-b046-aa543dc72941" />
 
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "Direct traffic had the highest volume but also a significant bounce rate...")*
+ => Google generated the highest traffic volume, while YouTube had the highest bounce rate. Direct traffic contributed substantial visits but maintained a relatively lower bounce rate compared to other major sources.
 
 ---
 
