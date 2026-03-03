@@ -1,14 +1,3 @@
-<div style="
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  color: white;
-">
-  <h3>📊 ecommerce-analytics-bigquery</h3>
-  <p>Created a reporting with Power BI to help managers discover churn situation of customers.</p>
-</div>
-
 # 📊 Explore E-commerce Performance of Google Merchandise Store | Web Analytics + SQL
 
 **Business Question:** How do users browse, engage, and convert on an e-commerce platform — and what drives revenue?
