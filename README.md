@@ -196,10 +196,9 @@ UNION ALL
 SELECT * FROM week_data
 ORDER BY time_type;
 ```
-
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "Google (organic search) was the dominant revenue source in June 2017...")*
+## Outcome
+<img width="784" height="326" alt="image" src="https://github.com/user-attachments/assets/0734b858-bef5-41f1-a4c6-75a57f811f4a" />
+ => Direct traffic was the leading revenue driver in June 2017, while Google (organic search) ranked second in revenue contribution.
 
 ---
 
