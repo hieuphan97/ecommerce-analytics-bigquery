@@ -128,7 +128,9 @@ GROUP BY 1
 ORDER BY 1;
 ```
 
-👉🏻 *Insert screenshot of query result here*
+<img width="641" height="204" alt="image" src="https://github.com/user-attachments/assets/9dae01b8-2eae-4640-b381-28d053b5a6e5" />
+<img width="641" height="204" alt="image" src="https://github.com/user-attachments/assets/9dae01b8-2eae-4640-b381-28d053b5a6e5" />
+
 
 **📌 Observations:** *(Add your findings — e.g., "Pageviews grew by X% from January to March...")*
 
