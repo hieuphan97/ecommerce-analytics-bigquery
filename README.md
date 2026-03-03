@@ -198,6 +198,7 @@ ORDER BY time_type;
 ```
 ## Outcome
 <img width="784" height="326" alt="image" src="https://github.com/user-attachments/assets/0734b858-bef5-41f1-a4c6-75a57f811f4a" />
+
  => Direct traffic was the leading revenue driver in June 2017, while Google (organic search) ranked second in revenue contribution.
 
 ---
@@ -241,11 +242,10 @@ FROM purchasers p
 FULL JOIN non_purchasers np ON p.month = np.month
 ORDER BY month;
 ```
+## Outcome
+<img width="745" height="128" alt="image" src="https://github.com/user-attachments/assets/ca2506d9-12c9-454c-8c49-577b281d5da6" />
 
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "Purchasers viewed on average X more pages than non-purchasers...")*
-
+ => urchasers viewed approximately 210–223 fewer pages on average than non-purchasers during these months.
 ---
 
 #### 🔍 Query 05: Average Transactions per Purchasing User (July 2017)
@@ -263,10 +263,8 @@ WHERE totals.transactions >= 1
   AND productRevenue IS NOT NULL
 GROUP BY month;
 ```
-
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "The average purchasing user completed approximately X transactions in July 2017...")*
+## Outcome
+<img width="486" height="69" alt="image" src="https://github.com/user-attachments/assets/9fe25996-98bd-4633-9df1-a79e0ff58fd5" />
 
 ---
 
@@ -292,10 +290,8 @@ SELECT
   ,ROUND(total_revenue / totals_visits, 2) AS avg_revenue_by_user_per_visit
 FROM revenue_per_user;
 ```
-
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "On average, each purchasing session generated approximately $X in revenue in July 2017...")*
+## Outcome
+<img width="476" height="76" alt="image" src="https://github.com/user-attachments/assets/6803c45a-be5a-4b46-a6d4-eba53e8a3915" />
 
 ---
 
@@ -333,11 +329,10 @@ SELECT *
 FROM other_purchases
 ORDER BY quantity DESC;
 ```
+## Outcome
+<img width="527" height="287" alt="image" src="https://github.com/user-attachments/assets/2b20cb8a-1a30-4e10-bc8b-626dae389ac5" />
 
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "The top co-purchased products were X, Y, Z — suggesting strong cross-sell potential...")*
-
+=> The top co-purchased products were Google Sunglasses, Google Women’s Vintage Hero Tee Black, and SPF-15 Slim & Slender Lip Balm, suggesting strong cross-sell potential — particularly around branded apparel and accessories.
 ---
 
 #### 🔍 Query 08: Product Conversion Funnel — View → Add to Cart → Purchase (Jan–Mar 2017)
@@ -400,10 +395,10 @@ LEFT JOIN cte_purchase p ON v.month = p.month
 GROUP BY month
 ORDER BY month;
 ```
+## Outcome
+<img width="888" height="122" alt="image" src="https://github.com/user-attachments/assets/6854354b-b237-45f2-a64a-9ccffc87ac19" />
 
-👉🏻 *Insert screenshot of query result here*
-
-**📌 Observations:** *(e.g., "The add-to-cart rate averaged ~X% across Q1 2017, while purchase rate was only ~Y%, indicating a significant drop-off at checkout...")*
+=> The add-to-cart rate averaged ~33.3% across Q1 2017, while the purchase rate was only ~10.2%, indicating a significant drop-off between cart addition and checkout completion.
 
 ---
 
